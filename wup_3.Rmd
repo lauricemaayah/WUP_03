@@ -1,7 +1,7 @@
 ---
 title: "Alcohol vs Seat choice"
-author: "Your Name"
-date: "Fall 2020"
+author: "Laurice Maayah"
+date: "Septemeber 2020"
 output: html_document
 ---
 
@@ -12,12 +12,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r include=FALSE}
 require(tidyverse)
 require(tigerstats)
+require(knitr)
 davisdata <- read.csv(file="UCDavis.csv")
 ```
 ## Our Goal is to answer this question Is there a difference between the alcohol consumed between the row
 ## you choose to sit in??
-
+  
+  
+$H_0$: the null hypothesis is that there is no difference between the alcohol consumed between the row you choose to sit in ??
+  
+$H_A$: the alternative hypothesis is that there is a difference between the alcohol consumed between the row you choose to sit in ??
+  
 ## Now with ggplot - first select the basic data
+
 
 ```{r}
 basicCN <- ggplot(davisdata,aes(y=alcohol,x=Seat))
@@ -27,18 +34,41 @@ basicCN <- ggplot(davisdata,aes(y=alcohol,x=Seat))
 ```{r}
 basicCN + geom_boxplot()
 ```
-  
+    
+Accordingly, the total alcohol intake of people who choose to sit on the back seat at 9.6 percent tends to be slightly above that of those who stood in the front at 1.8 percent on the medium of the alcohol consumption and 3.28 percent on the center of the back seat.
   
 ### get fancy  
 
 ```{r}
 basicCN + geom_boxplot(notch=TRUE,outlier.color = "red") + stat_boxplot(geom ='errorbar') + labs(title="Fancy notch boxplot \n with 2 lines")
 ```
-
+  
+The box plot states that the confidence level for back row seats is on average 95% and if it doesn't overlap, statistically important variations can be seen in the medium seating range. It further shows that there is no difference between the null hypothesis.
+    
 ## Numerical Summarys 
-
+  
+```{r}
+favstats(alcohol~Seat,data = davisdata )
+```
+      
+The mathematical cross tabulation diagram reveals that, as compared to 1.8% in front rows and 3,28% in middle rows, mean alcohol intake by other people who choose to sit on the rear row is slightly greater by 9, 8%.
+  
 ## Inferential Tests
 
+```{r}
+model1 <- aov(alcohol~Seat,data=davisdata)
+summary.aov(model1)
+```
+    
+The anova test demonstrates that p is less than 0.05 and needs a p value of .000116. It tells us that the null hypothesis should be dismissed because there can be no row-based chnage in which a person is sitting.
+  
+  
+```{r}
+par(mar = c(3, 8.7, 2, 2))
+plot(TukeyHSD(model1),las=2)
+```
+  
 ## Conclusions
-
-
+  
+From the box numbers, numerical summaries and the above Anova test we assume that there is also a disparity between alcohol intake and the number of people who decide to stand in line.
+  
